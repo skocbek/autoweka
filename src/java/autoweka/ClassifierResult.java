@@ -72,10 +72,20 @@ public class ClassifierResult
         } 
     }
     
+	public static class AreaUnderROC implements Metric
+    {
+        public float getDefault() { return 0.0f; }
+        public float getScore(Evaluation eval, Instances testingData) {
+            return (float)(eval.areaUnderROC(testingData.classIndex()));
+        }
+    }
+	
     private static Metric getMetricFromString(String className){
         //Is it one of the names that we know about?
         if(className.equals("errorRate"))
             return new ErrorRateMetric();
+		else if(className.equals("auc"))
+            return new AreaUnderROC();
         else if(className.equals("meanAbsoluteErrorMetric"))
             return new MeanAbsoluteErrorMetric();
         else if(className.equals("rmse"))
@@ -84,6 +94,7 @@ public class ClassifierResult
             return new RelativeAbsoluteErrorMetric();
         else if(className.equals("rrse"))
             return new RootRelativeSquaredErrorMetric();
+		
 
         //Nope, treat this as a class name
         try
